@@ -73,9 +73,21 @@ public class T9Test {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        Object[][] data = new Object[][] {
-            {"Dummy", new ArrayList<>(Arrays.asList(new Contact("Dummy", "Name", "+792325")))},
-            {"Friend", new ArrayList<>(Arrays.asList(new Contact("Old", "Friend", "93845")))},
+        Object[][] data = new Object[][] {  // "Dummy" = "38669", "Friend" = "374363"
+            {"38669", new ArrayList<>(Arrays.asList(new Contact("Dummy", "Name", "+792325")))},
+            {"374363", new ArrayList<>(Arrays.asList(new Contact("Old", "Friend", "93845"),
+                    new Contact("New", "Friend", "9857**23")))},
+            {"", new ContactsProvider().provideContacts()},
+            {"3", new ArrayList<>(Arrays.asList(
+                    new Contact("Dummy", "Name", "+792325"),
+                    new Contact("Old", "Friend", "93845"),
+                    new Contact("New", "Friend", "9857**23"),
+                    new Contact("Dusty", "Mr", "983"),
+                    new Contact("Wd", null, "984597438")))},
+            {"74363", new ArrayList<>()}, // ummy
+            {"74", new ArrayList<>(Arrays.asList(new Contact("Wd", null, "984597438")))},
+            {"792325", new ArrayList<>(Arrays.asList(new Contact("Dummy", "Name", "+792325")))},
+            {"2985798372598732948723", new ArrayList<>()},
             {"9857**23", new ArrayList<>(Arrays.asList(new Contact("New", "Friend", "9857**23")))}
             };
         return Arrays.asList(data);
@@ -84,8 +96,15 @@ public class T9Test {
     @Test
     public void verifyAlgorithm() throws Exception {
         mPresenter.requestContacts(userInput);
-        verify(mView).displayRequestedContacts(captor.capture());
-        assertEquals("Result", returnedContacts, captor.getValue());
+        if (userInput.equals("2985798372598732948723") || userInput.equals("74363")) {
+            verify(mView).displayEmptyView();
+        } else {
+            verify(mView).displayRequestedContacts(captor.capture());
+            //assertEquals("Result", returnedContacts, captor.getValue());
+            assertTrue(captor.getValue().get(0).getName(), returnedContacts.containsAll(captor.getValue()) &&
+                    returnedContacts.size() == captor.getValue().size());
+        }
     }
+
 
 }

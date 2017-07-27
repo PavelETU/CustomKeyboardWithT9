@@ -13,6 +13,7 @@ public class Contract {
         void displayRequestedContacts(List<Contact> data);
         void deleteLastCharacter();
         void deleteAllCharacters();
+        void displayEmptyView();
     }
     interface Presenter {
         void requestContacts(String input);

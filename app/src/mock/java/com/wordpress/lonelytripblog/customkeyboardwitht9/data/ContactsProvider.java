@@ -1,5 +1,7 @@
 package com.wordpress.lonelytripblog.customkeyboardwitht9.data;
 
+import com.wordpress.lonelytripblog.customkeyboardwitht9.trie_data_structure.Trie;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,9 +11,10 @@ import java.util.List;
  */
 
 public class ContactsProvider implements ContactsProviderContract {
-    @Override
-    public List<Contact> provideContacts() {
-        List<Contact> result = new ArrayList<>(Arrays.asList(
+    private List<Contact> contacts;
+
+    public ContactsProvider() {
+        contacts = new ArrayList<>(Arrays.asList(
                 new Contact("Dummy", "Name", "+792325"),
                 new Contact("Old", "Friend", "93845"),
                 new Contact("New", "Friend", "9857**23"),
@@ -20,6 +23,28 @@ public class ContactsProvider implements ContactsProviderContract {
                 new Contact(null, null, null),
                 new Contact(null, "Ms", "****"),
                 new Contact("Wd", null, "984597438")));
-        return result;
+    }
+
+    @Override
+    public List<Contact> provideContacts() {
+        return contacts;
+    }
+
+    @Override
+    public Trie provideTrie() {
+        Trie trie = new Trie();
+        for (int i = 0; i < contacts.size(); i++) {
+            Contact contact = contacts.get(i);
+            if (contact.getName() != null) {
+                trie.insertWord(contact.getName(), i);
+            }
+            if (contact.getSurName() != null) {
+                trie.insertWord(contact.getSurName(), i);
+            }
+            if (contact.getNumber() != null) {
+                trie.insertNumber(contact.getNumber(), i);
+            }
+        }
+        return trie;
     }
 }
