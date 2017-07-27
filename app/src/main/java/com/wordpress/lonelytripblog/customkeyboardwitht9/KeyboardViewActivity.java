@@ -18,15 +18,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.Contact;
+import com.wordpress.lonelytripblog.customkeyboardwitht9.utils.CustomArrayAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class KeyboardViewActivity extends AppCompatActivity implements Contract.View, KeyboardView.OnKeyboardActionListener {
+public class KeyboardViewActivity extends AppCompatActivity implements Contract.View {
 
     private KeyboardView keyboardView;
     private ArrayAdapter<Contact> mArrayAdapter;
     private Contract.Presenter mPresenter;
-    private EditText editText;
 
     @Override
     public void onBackPressed() {
@@ -44,13 +45,13 @@ public class KeyboardViewActivity extends AppCompatActivity implements Contract.
         mPresenter = new InputHandler(this);
         Keyboard keyboard = new Keyboard(this, R.xml.custom_keyboard);
         ListView contactsList = (ListView) findViewById(R.id.contacts_list);
-        mArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        mArrayAdapter = new CustomArrayAdapter(this, new ArrayList<Contact>());
         contactsList.setAdapter(mArrayAdapter);
         keyboardView = (KeyboardView) findViewById(R.id.keyboard_view);
         keyboardView.setKeyboard(keyboard);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        editText = (EditText) findViewById(R.id.input);
-        editText.setOnTouchListener(new View.OnTouchListener() {
+        final EditText userInput = (EditText) findViewById(R.id.input);
+        userInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (!(keyboardView.getVisibility() == View.VISIBLE)) {
@@ -59,25 +60,49 @@ public class KeyboardViewActivity extends AppCompatActivity implements Contract.
                 return true;
             }
         });
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        userInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     openCustomKeyboard(view);
-                    mPresenter.requestContacts(editText.getText().toString());
+                    mPresenter.requestContacts(userInput.getText().toString());
                 } else {
                     hideCustomKeyboard();
                 }
             }
         });
-        keyboardView.setOnKeyboardActionListener(this);
+        keyboardView.setOnKeyboardActionListener(new KeyboardView.OnKeyboardActionListener() {
+            @Override
+            public void onPress(int i) { }
+            @Override
+            public void onRelease(int i) {      }
+            @Override
+            public void onKey(int primaryCode, int[] keyCodes) {
+                View focusCurrent = getWindow().getCurrentFocus();
+                if( (focusCurrent == null) || focusCurrent.getClass()!=AppCompatEditText.class ) return;
+                EditText editText = (EditText) focusCurrent;
+                Editable editable = editText.getText();
+                int start = editText.getSelectionStart();
+                editable.insert(start, Character.toString((char) primaryCode));
+            }
+            @Override
+            public void onText(CharSequence charSequence) {  }
+            @Override
+            public void swipeLeft() {   }
+            @Override
+            public void swipeRight() {     }
+            @Override
+            public void swipeDown() {         }
+            @Override
+            public void swipeUp() {   }
+        });
         keyboardView.setPreviewEnabled(false);
         ImageButton clearButton = (ImageButton) findViewById(R.id.clear_btn);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Editable editable = editText.getText();
-                int start = editText.getSelectionStart();
+                Editable editable = userInput.getText();
+                int start = userInput.getSelectionStart();
                 if (start > 0) {
                     editable.replace(start - 1, start, "");
                 }
@@ -86,29 +111,23 @@ public class KeyboardViewActivity extends AppCompatActivity implements Contract.
         clearButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                editText.getText().clear();
+                userInput.getText().clear();
                 return true;
             }
         });
-        editText.addTextChangedListener(new TextWatcher() {
+        userInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 mPresenter.requestContacts(editable.toString());
             }
         });
     }
-
-
 
     @Override
     public void displayRequestedContacts(List<Contact> data) {
@@ -132,53 +151,8 @@ public class KeyboardViewActivity extends AppCompatActivity implements Contract.
         keyboardView.setVisibility(View.VISIBLE);
         keyboardView.setEnabled(true);
         if (view != null) {
-            ( (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE) ).
+            ((InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE)).
                     hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    @Override
-    public void onPress(int i) {
-
-    }
-
-    @Override
-    public void onRelease(int i) {
-
-    }
-
-    @Override
-    public void onKey(int primaryCode, int[] keyCodes) {
-        View focusCurrent = getWindow().getCurrentFocus();
-        if( (focusCurrent == null) || focusCurrent.getClass()!=AppCompatEditText.class ) return;
-        EditText editText = (EditText) focusCurrent;
-        Editable editable = editText.getText();
-        int start = editText.getSelectionStart();
-        editable.insert(start, Character.toString((char) primaryCode));
-    }
-
-    @Override
-    public void onText(CharSequence charSequence) {
-
-    }
-
-    @Override
-    public void swipeLeft() {
-
-    }
-
-    @Override
-    public void swipeRight() {
-
-    }
-
-    @Override
-    public void swipeDown() {
-
-    }
-
-    @Override
-    public void swipeUp() {
-
     }
 }
