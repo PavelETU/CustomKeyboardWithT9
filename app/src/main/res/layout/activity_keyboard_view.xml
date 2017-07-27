@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wordpress.lonelytripblog.customkeyboardwitht9.KeyboardView">
+    tools:context="com.wordpress.lonelytripblog.customkeyboardwitht9.KeyboardViewActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ListView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/contacts_list"
+        android:scrollbars="vertical"
+        tools:listitem="null"
+        android:layout_above="@+id/linear_layout"
+        android:layout_alignParentTop="true"/>
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@id/linear_layout"
+        android:layout_alignParentBottom="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/input"
+                android:hint="@string/hint"
+                android:inputType="none"
+                android:onClick="openCustomKeyboard"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/clear_btn"
+                android:layout_gravity="end"
+                android:background="@null"
+                app:srcCompat="@android:drawable/ic_input_delete" />
+        </FrameLayout>
+        <com.wordpress.lonelytripblog.customkeyboardwitht9.keyboard_utils.MyKeyboardClass
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/keyboard_view"
+            android:visibility="gone"
+            android:background="@color/colorBack"/>
+    </LinearLayout>
+</RelativeLayout>

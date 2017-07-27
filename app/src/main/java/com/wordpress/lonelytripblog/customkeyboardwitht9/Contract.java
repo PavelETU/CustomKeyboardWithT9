@@ -11,8 +11,6 @@ import java.util.List;
 public class Contract {
     interface View {
         void displayRequestedContacts(List<Contact> data);
-        void deleteLastCharacter();
-        void deleteAllCharacters();
         void displayEmptyView();
     }
     interface Presenter {
