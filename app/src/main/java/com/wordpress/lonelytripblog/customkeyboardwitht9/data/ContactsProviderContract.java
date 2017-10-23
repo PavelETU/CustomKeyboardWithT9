@@ -9,6 +9,14 @@ import java.util.List;
  */
 
 public interface ContactsProviderContract {
-    List<Contact> provideContacts();
-    Trie provideTrie();
+    interface ProvideContactsCallback {
+        void onSuccess(List<Contact> result);
+        void onFailed(String message);
+    }
+    interface ProvideTrieCallback {
+        void onSuccess(Trie result);
+        void onFailed(String message);
+    }
+    void provideContacts(ProvideContactsCallback callback);
+    void provideTrie(ProvideTrieCallback callback);
 }

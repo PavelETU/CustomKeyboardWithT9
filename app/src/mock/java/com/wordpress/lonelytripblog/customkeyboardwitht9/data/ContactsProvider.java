@@ -82,7 +82,7 @@ public class ContactsProvider implements ContactsProviderContract {
                 new Contact("Here", "We", "63422*"),
                 new Contact("Brand", "New", "##8557465765446"),
                 new Contact("Ah", "Bro2", "857498585712678"),
-                new Contact(null, "Mr", "*++85749857124234855678"),
+                new Contact(null, "Mr", "*++857498571242348556708"),
                 new Contact("Ah", "Bro", "458464324984"),
                 new Contact("Howard", "Bro", "5543324897453+#678"),
 
@@ -90,12 +90,12 @@ public class ContactsProvider implements ContactsProviderContract {
     }
 
     @Override
-    public List<Contact> provideContacts() {
-        return contacts;
+    public void provideContacts(ProvideContactsCallback callback) {
+        callback.onSuccess(contacts);
     }
 
     @Override
-    public Trie provideTrie() {
+    public void provideTrie(ProvideTrieCallback callback) {
         Trie trie = new Trie();
         for (int i = 0; i < contacts.size(); i++) {
             Contact contact = contacts.get(i);
@@ -109,6 +109,6 @@ public class ContactsProvider implements ContactsProviderContract {
                 trie.insertNumber(contact.getNumber(), i);
             }
         }
-        return trie;
+        callback.onSuccess(trie);
     }
 }

@@ -1,5 +1,7 @@
 package com.wordpress.lonelytripblog.customkeyboardwitht9;
 
+import android.util.Log;
+
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.Contact;
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.ContactsProvider;
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.ContactsProviderContract;
@@ -17,16 +19,36 @@ import java.util.Set;
 
 public class InputHandler implements Contract.Presenter {
 
+    private static final String TAG = InputHandler.class.getSimpleName();
     private Contract.View view;
 
     private List<Contact> allContacts;
     private Trie mTrie;
 
-    public InputHandler(Contract.View view) {
+    public InputHandler(ContactsProviderContract provider, Contract.View view) {
         this.view = view;
-        ContactsProviderContract provider = new ContactsProvider();
-        allContacts = provider.provideContacts();
-        mTrie = provider.provideTrie();
+        provider.provideContacts(new ContactsProviderContract.ProvideContactsCallback() {
+            @Override
+            public void onSuccess(List<Contact> result) {
+                allContacts = result;
+            }
+
+            @Override
+            public void onFailed(String message) {
+                Log.e(TAG, message);
+            }
+        });
+        provider.provideTrie(new ContactsProviderContract.ProvideTrieCallback() {
+            @Override
+            public void onSuccess(Trie result) {
+                mTrie = result;
+            }
+
+            @Override
+            public void onFailed(String message) {
+                Log.e(TAG, message);
+            }
+        });
     }
 
 
@@ -39,6 +61,7 @@ public class InputHandler implements Contract.Presenter {
      */
     @Override
     public void requestContacts(String input) {
+        if (mTrie == null || allContacts == null) return;
         if (input.equals("")) {
             view.displayRequestedContacts(allContacts);
             return;
