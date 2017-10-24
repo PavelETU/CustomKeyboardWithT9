@@ -3,10 +3,8 @@ package com.wordpress.lonelytripblog.customkeyboardwitht9;
 import android.util.Log;
 
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.Contact;
-import com.wordpress.lonelytripblog.customkeyboardwitht9.data.ContactsProvider;
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.ContactsProviderContract;
 import com.wordpress.lonelytripblog.customkeyboardwitht9.trie_data_structure.Trie;
-import com.wordpress.lonelytripblog.customkeyboardwitht9.trie_data_structure.TrieNode;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -34,14 +34,7 @@ public class CustomArrayAdapter extends ArrayAdapter<Contact> {
         }
         TextView name = (TextView) convertView.findViewById(R.id.name_field);
         TextView number = (TextView) convertView.findViewById(R.id.number_field);
-        String nameSurName;
-        if (contact.getName() == null) {
-            nameSurName = contact.getSurName() == null ? "Unknown" : contact.getSurName();
-        } else {
-            nameSurName = contact.getSurName() == null ?
-                    contact.getName() :
-                    contact.getName() + " " + contact.getSurName();
-        }
+        String nameSurName = contact.getName() == null ? "Unknown" : contact.getName();
         name.setText(nameSurName);
         number.setText(contact.getNumber() == null ? "Unknown" : contact.getNumber());
         return convertView;

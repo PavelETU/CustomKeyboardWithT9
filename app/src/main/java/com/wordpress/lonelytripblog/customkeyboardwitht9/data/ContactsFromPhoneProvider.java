@@ -56,14 +56,14 @@ public class ContactsFromPhoneProvider implements ContactsProviderContract {
                     while (phones.moveToNext()) {
                         String number = phones.getString(phoneIndex);
                         if (number == null) continue;
-                        contacts.add(new Contact(name, null, number));
+                        contacts.add(new Contact(name, number));
                     }
                     phones.close();
                 } else {
                     if (name == null) {
                         continue;
                     }
-                    contacts.add(new Contact(name, null, null));
+                    contacts.add(new Contact(name, null));
                 }
             }
             cursor.close();
@@ -80,9 +80,6 @@ public class ContactsFromPhoneProvider implements ContactsProviderContract {
                 Contact contact = contacts.get(i);
                 if (contact.getName() != null) {
                     mTrie.insertWord(contact.getName(), i);
-                }
-                if (contact.getSurName() != null) {
-                    mTrie.insertWord(contact.getSurName(), i);
                 }
                 if (contact.getNumber() != null) {
                     mTrie.insertNumber(contact.getNumber(), i);

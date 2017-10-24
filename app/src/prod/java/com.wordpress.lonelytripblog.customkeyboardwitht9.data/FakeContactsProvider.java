@@ -11,19 +11,19 @@ import java.util.List;
  * Contacts provider. Should be production ready
  */
 
-public class ContactsProvider implements ContactsProviderContract {
+public class FakeContactsProvider implements ContactsProviderContract {
     private List<Contact> contacts;
 
-    public ContactsProvider() {
+    public FakeContactsProvider() {
         contacts = new ArrayList<>(Arrays.asList(
-                new Contact("Dummy", "Name", "+792325"),
-                new Contact("Old", "Friend", "93845"),
-                new Contact("New", "Friend", "9857**23"),
-                new Contact("Dusty", "Mr", "983"),
-                new Contact("Without", "number", null),
-                new Contact(null, null, null),
-                new Contact(null, "Ms", "****"),
-                new Contact("Wd", null, "984597438")));
+                new Contact("Dummy", "+792325"),
+                new Contact("Old", "93845"),
+                new Contact("New", "9857**23"),
+                new Contact("Dusty", "983"),
+                new Contact("Without", null),
+                new Contact(null, null),
+                new Contact(null, "****"),
+                new Contact("Wd", "984597438")));
     }
 
     @Override
@@ -38,9 +38,6 @@ public class ContactsProvider implements ContactsProviderContract {
             Contact contact = contacts.get(i);
             if (contact.getName() != null) {
                 trie.insertWord(contact.getName(), i);
-            }
-            if (contact.getSurName() != null) {
-                trie.insertWord(contact.getSurName(), i);
             }
             if (contact.getNumber() != null) {
                 trie.insertNumber(contact.getNumber(), i);

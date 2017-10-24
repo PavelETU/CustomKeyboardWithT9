@@ -1,7 +1,7 @@
 package com.wordpress.lonelytripblog.customkeyboardwitht9;
 
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.Contact;
-import com.wordpress.lonelytripblog.customkeyboardwitht9.data.ContactsProvider;
+import com.wordpress.lonelytripblog.customkeyboardwitht9.data.FakeContactsProvider;
 import com.wordpress.lonelytripblog.customkeyboardwitht9.data.ContactsProviderContract;
 
 import org.junit.Before;
@@ -12,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,15 +29,15 @@ import static org.mockito.Mockito.*;
  *
  * Verifying our algorithm against fake contacts provider (in .../src/mock directory).
  * Contacts declared in provider
- * (name, surname, number):
- * "Dummy", "Name", "+792325"
- * "Old", "Friend", "93845"
- * "New", "Friend", "9857**23"
- * "Dusty", "Mr", "983"
- * "Without", "number", null
- * null, null, null
- * null, "Ms", "****"
- * "Wd", null, "984597438"
+ * (name, number):
+ * "Dummy", "+792325"
+ * "Old", "93845"
+ * "New", "9857**23"
+ * "Dusty", "983"
+ * "Without", null
+ * null, null
+ * null, "****"
+ * "Wd", "984597438"
  */
 
 
@@ -64,8 +63,8 @@ public class T9Test {
     @Before
     public void setupPresenter() {
         MockitoAnnotations.initMocks(this);
-        mPresenter = new InputHandler(mView);
-        mContactsProvider = new ContactsProvider();
+        mPresenter = new InputHandler(new FakeContactsProvider(), mView);
+        mContactsProvider = new FakeContactsProvider();
     }
 
     public String userInput;
@@ -74,21 +73,18 @@ public class T9Test {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {  // "Dummy" = "38669", "Friend" = "374363"
-            {"38669", new ArrayList<>(Arrays.asList(new Contact("Dummy", "Name", "+792325")))},
-            {"374363", new ArrayList<>(Arrays.asList(new Contact("Old", "Friend", "93845"),
-                    new Contact("New", "Friend", "9857**23")))},
-            {"", new ContactsProvider().provideContacts()},
+            {"38669", new ArrayList<>(Arrays.asList(new Contact("Dummy", "+792325")))},
             {"3", new ArrayList<>(Arrays.asList(
-                    new Contact("Dummy", "Name", "+792325"),
-                    new Contact("Old", "Friend", "93845"),
-                    new Contact("New", "Friend", "9857**23"),
-                    new Contact("Dusty", "Mr", "983"),
-                    new Contact("Wd", null, "984597438")))},
+                    new Contact("Dummy", "+792325"),
+                    new Contact("Old", "93845"),
+                    new Contact("New", "9857**23"),
+                    new Contact("Dusty", "983"),
+                    new Contact("Wd", "984597438")))},
             {"74363", new ArrayList<>()}, // ummy
-            {"74", new ArrayList<>(Arrays.asList(new Contact("Wd", null, "984597438")))},
-            {"792325", new ArrayList<>(Arrays.asList(new Contact("Dummy", "Name", "+792325")))},
+            {"74", new ArrayList<>(Arrays.asList(new Contact("Wd", "984597438")))},
+            {"792325", new ArrayList<>(Arrays.asList(new Contact("Dummy", "+792325")))},
             {"2985798372598732948723", new ArrayList<>()},
-            {"9857**23", new ArrayList<>(Arrays.asList(new Contact("New", "Friend", "9857**23")))}
+            {"9857**23", new ArrayList<>(Arrays.asList(new Contact("New", "9857**23")))}
             };
         return Arrays.asList(data);
     }
